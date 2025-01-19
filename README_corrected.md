@@ -1,6 +1,6 @@
 # Tirage au Sort avec Slim Framework
 
-Une application web simple développée avec le **Slim Framework** en PHP, permettant de gérer une liste d'étudiants et de tirer un nom au hasard. L'interface utilisateur est stylisée avec **NES.css** pour un rendu rétro.
+Une application web simple développée avec le **Slim Framework** en PHP, permettant de gérer une liste d'étudiants et de tirer un nom au hasard. L'interface utilisateur est stylisée avec **Clarity UI** pour un rendu moderne et professionnel.
 
 ## Fonctionnalités
 
@@ -8,13 +8,13 @@ Une application web simple développée avec le **Slim Framework** en PHP, perme
 - Afficher la liste des étudiants enregistrés.
 - Tirer un étudiant au hasard.
 - Suppression automatique de l'étudiant sélectionné de la liste.
-- Interface utilisateur rétro grâce à **NES.css**.
+- Interface utilisateur moderne grâce à **Clarity UI**.
 
 ## Technologies utilisées
 
 - **Slim Framework** : Framework PHP léger pour construire des applications web.
 - **PHP** : Langage backend pour le traitement des requêtes.
-- **NES.css** : Bibliothèque CSS pour un design rétro.
+- **Clarity UI** : Bibliothèque CSS pour un design moderne.
 - **JavaScript** : Pour la communication avec l'API et la gestion des interactions utilisateur.
 - **HTML/CSS** : Pour l'interface utilisateur.
 
@@ -120,4 +120,4 @@ Ce projet est sous licence MIT. Vous êtes libre de l'utiliser, le modifier et l
 
 ---
 
-Bon développement et amusez-vous avec cette application rétro de tirage au sort ! 🎲
+Bon développement et amusez-vous avec cette application moderne de tirage au sort ! 🎲

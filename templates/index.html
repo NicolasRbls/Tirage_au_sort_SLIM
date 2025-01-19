@@ -4,72 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sélection Aléatoire d'Étudiants</title>
-    <!-- Lien NES.css -->
-    <link href="https://unpkg.com/nes.css/css/nes.min.css" rel="stylesheet">
+    <!-- Lien Clarity UI -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clarity-ui/5.6.0/clarity-ui.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clarity-icons/5.6.0/clarity-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clarity-icons/5.6.0/shapes/all.min.css">
     <style>
         body {
-            margin: 20px;
-            font-family: 'Press Start 2P', cursive;
-            background-color: #212529;
-            color: white;
-        }
-        #container {
-            max-width: 600px;
-            margin: auto;
-            background-color: #2d3436;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
-        input, button {
-            margin: 10px 0;
-        }
-        pre {
-            background-color: #1e272e;
-            color: #dfe6e9;
-            padding: 10px;
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 20px;
             border-radius: 8px;
-            border: 1px solid #2d3436;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .btn {
+            margin: 10px 0;
+            display: block;
+            width: 100%;
+        }
+        .student-list {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #f1f1f1;
+        }
+        .alert {
+            margin-bottom: 15px;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-    <div id="container" class="nes-container is-dark with-title">
-        <p class="title">🎲 Sélection Aléatoire</p>
-        <div class="nes-field">
-            <label for="studentName">Nom de l'étudiant :</label>
-            <input id="studentName" type="text" class="nes-input" placeholder="Entrez un nom">
+    <div class="container">
+        <h1>🎲 Sélection Aléatoire</h1>
+        <div class="clr-form clr-form-compact">
+            <label for="studentName" class="clr-control-label">Nom de l'étudiant :</label>
+            <div class="clr-input-wrapper">
+                <input id="studentName" type="text" class="clr-input" placeholder="Entrez un nom">
+            </div>
         </div>
-        <button class="nes-btn is-primary" onclick="addStudent()">Ajouter un étudiant</button>
-        <button class="nes-btn is-warning" onclick="pickStudent()">Tirer un étudiant</button>
-        <h2 class="nes-text is-success">Liste des étudiants :</h2>
-        <pre id="studentList" class="nes-container is-rounded"></pre>
+        <button class="btn clr-btn clr-btn-primary" onclick="addStudent()">Ajouter un étudiant</button>
+        <button class="btn clr-btn clr-btn-success" onclick="pickStudent()">Tirer un étudiant</button>
+
+        <div id="alertContainer" class="alert alert-success" style="display: none;"></div>
+
+        <h2>Liste des étudiants :</h2>
+        <div id="studentList" class="student-list">
+            La liste est vide.
+        </div>
     </div>
 
     <script>
         async function addStudent() {
             const name = document.getElementById('studentName').value.trim();
+            if (!name) {
+                showAlert('Veuillez entrer un nom valide.', 'danger');
+                return;
+            }
             const response = await fetch('/add_student', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name })
             });
             const result = await response.json();
-            alert(result.message || result.error);
+            showAlert(result.message || result.error, response.ok ? 'success' : 'danger');
             if (response.ok) getStudents();
         }
 
         async function pickStudent() {
             const response = await fetch('/pick_student', { method: 'POST' });
             const result = await response.json();
-            alert(result.chosen_student || result.error);
+            showAlert(result.chosen_student || result.error, response.ok ? 'success' : 'danger');
             if (response.ok) getStudents();
         }
 
         async function getStudents() {
             const response = await fetch('/get_students');
             const result = await response.json();
-            document.getElementById('studentList').innerText = JSON.stringify(result.students, null, 2);
+            const studentList = document.getElementById('studentList');
+            if (result.students.length > 0) {
+                studentList.innerText = result.students.join(', ');
+            } else {
+                studentList.innerText = 'La liste est vide.';
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerText = message;
+            alertContainer.className = `alert alert-${type}`;
+            alertContainer.style.display = 'block';
+            setTimeout(() => {
+                alertContainer.style.display = 'none';
+            }, 3000);
         }
 
         document.addEventListener('DOMContentLoaded', getStudents);
