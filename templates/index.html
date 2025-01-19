@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sélection Aléatoire d'Étudiants</title>
+    <!-- Lien NES.css -->
+    <link href="https://unpkg.com/nes.css/css/nes.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 20px;
+            font-family: 'Press Start 2P', cursive;
+            background-color: #212529;
+            color: white;
+        }
+        #container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #2d3436;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+        input, button {
+            margin: 10px 0;
+        }
+        pre {
+            background-color: #1e272e;
+            color: #dfe6e9;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #2d3436;
+        }
+    </style>
+</head>
+<body>
+    <div id="container" class="nes-container is-dark with-title">
+        <p class="title">🎲 Sélection Aléatoire</p>
+        <div class="nes-field">
+            <label for="studentName">Nom de l'étudiant :</label>
+            <input id="studentName" type="text" class="nes-input" placeholder="Entrez un nom">
+        </div>
+        <button class="nes-btn is-primary" onclick="addStudent()">Ajouter un étudiant</button>
+        <button class="nes-btn is-warning" onclick="pickStudent()">Tirer un étudiant</button>
+        <h2 class="nes-text is-success">Liste des étudiants :</h2>
+        <pre id="studentList" class="nes-container is-rounded"></pre>
+    </div>
+
+    <script>
+        async function addStudent() {
+            const name = document.getElementById('studentName').value.trim();
+            const response = await fetch('/add_student', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            });
+            const result = await response.json();
+            alert(result.message || result.error);
+            if (response.ok) getStudents();
+        }
+
+        async function pickStudent() {
+            const response = await fetch('/pick_student', { method: 'POST' });
+            const result = await response.json();
+            alert(result.chosen_student || result.error);
+            if (response.ok) getStudents();
+        }
+
+        async function getStudents() {
+            const response = await fetch('/get_students');
+            const result = await response.json();
+            document.getElementById('studentList').innerText = JSON.stringify(result.students, null, 2);
+        }
+
+        document.addEventListener('DOMContentLoaded', getStudents);
+    </script>
+</body>
+</html>
